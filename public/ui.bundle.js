@@ -828,12 +828,21 @@ class StringWriter {
         return this.cache;
     }
 }
+function delay(ms) {
+    return new Promise((res)=>setTimeout(()=>{
+            res();
+        }, ms)
+    );
+}
 document.addEventListener("DOMContentLoaded", ()=>{
+    const STATUS = document.getElementById("status");
     const MESSAGES = document.getElementById("messages");
     const FORM = document.getElementById("form");
     const MESSAGE = document.getElementById("message");
-    async function main() {
+    async function listen() {
+        STATUS.innerText = "🟡 Connecting...";
         const res = await fetch("/listen");
+        STATUS.innerText = "🟢 Connected";
         const reader1 = readerFromStreamReader(res.body.getReader());
         const lines = readLines(reader1);
         for await (const line of lines){
@@ -842,6 +851,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
             li.innerText = body;
             MESSAGES.appendChild(li);
         }
+        STATUS.innerText = "🔴 Disconnected";
     }
     FORM.onsubmit = (e)=>{
         e.preventDefault();
@@ -856,6 +866,12 @@ document.addEventListener("DOMContentLoaded", ()=>{
         ).then(console.log);
         return false;
     };
+    async function main() {
+        while(true){
+            await listen();
+            await delay(1000);
+        }
+    }
     main();
 });
 
