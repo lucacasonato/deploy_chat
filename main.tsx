@@ -18,11 +18,17 @@ function Page() {
         <script src="/ui.bundle.js" type="module"></script>
       </head>
       <body>
-        <ul id="messages"></ul>
+        <header>
+          <h3>Deno Chat</h3>
+          <p>
+            Status: <span id="status">🔴 Disconnected</span>
+          </p>
+        </header>
         <form id="form">
           <input type="text" id="message" />
           <button type="submit">Send</button>
         </form>
+        <ul id="messages"></ul>
       </body>
     </html>
   );

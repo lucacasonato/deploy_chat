@@ -2,14 +2,18 @@ import {
   readerFromStreamReader,
   readLines,
 } from "https://deno.land/std@0.97.0/io/mod.ts";
+import { delay } from "https://deno.land/std@0.97.0/async/delay.ts";
 
 document.addEventListener("DOMContentLoaded", () => {
+  const STATUS = document.getElementById("status") as HTMLSpanElement;
   const MESSAGES = document.getElementById("messages") as HTMLUListElement;
   const FORM = document.getElementById("form") as HTMLFormElement;
   const MESSAGE = document.getElementById("message") as HTMLInputElement;
 
-  async function main() {
+  async function listen() {
+    STATUS.innerText = "🟡 Connecting...";
     const res = await fetch("/listen");
+    STATUS.innerText = "🟢 Connected";
     const reader = readerFromStreamReader(res.body!.getReader());
     const lines = readLines(reader);
     for await (const line of lines) {
@@ -18,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
       li.innerText = body;
       MESSAGES.appendChild(li);
     }
+    STATUS.innerText = "🔴 Disconnected";
   }
 
   FORM.onsubmit = (e) => {
@@ -32,6 +37,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return false;
   };
+
+  async function main() {
+    while (true) {
+      await listen();
+      await delay(1000);
+    }
+  }
 
   main();
 });
