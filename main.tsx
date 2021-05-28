@@ -1,4 +1,4 @@
-import { Fragment, h, jsx, serve, serveStatic } from "./deps.ts";
+import { h, jsx, serve, serveStatic } from "./deps.ts";
 
 serve({
   "/": () => jsx(<Page />),
