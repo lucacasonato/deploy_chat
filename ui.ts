@@ -12,17 +12,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function listen() {
     STATUS.innerText = "🟡 Connecting...";
-    const res = await fetch("/listen");
-    STATUS.innerText = "🟢 Connected";
-    const reader = readerFromStreamReader(res.body!.getReader());
-    const lines = readLines(reader);
-    for await (const line of lines) {
-      const { body } = JSON.parse(line);
-      const li = document.createElement("li");
-      li.innerText = body;
-      MESSAGES.appendChild(li);
+    try {
+      const res = await fetch("/listen");
+      STATUS.innerText = "🟢 Connected";
+      const reader = readerFromStreamReader(res.body!.getReader());
+      const lines = readLines(reader);
+      for await (const line of lines) {
+        const { kind, data } = JSON.parse(line);
+        switch (kind) {
+          case "msg": {
+            const { body } = data;
+            const li = document.createElement("li");
+            li.innerText = body;
+            MESSAGES.appendChild(li);
+            break;
+          }
+          case "keepalive":
+            console.log("keepalive");
+            break;
+          default:
+            break;
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      STATUS.innerText = "🔴 Disconnected";
     }
-    STATUS.innerText = "🔴 Disconnected";
   }
 
   FORM.onsubmit = (e) => {

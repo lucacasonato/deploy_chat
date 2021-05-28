@@ -55,19 +55,38 @@ async function send(req: Request): Promise<Response> {
 function listen(_req: Request): Response {
   console.log("listen");
   const channel = new BroadcastChannel("chat");
+  let intervalId: number | null = null;
   const stream = new ReadableStream({
     start: (controller) => {
+      keepalive(controller);
+      intervalId = setInterval(() => {
+        keepalive(controller);
+      });
       channel.onmessage = (e) => {
-        console.log(e.data);
-        const chunk = new TextEncoder().encode(JSON.stringify(e.data) + "\n");
-        controller.enqueue(chunk);
+        send(controller, { kind: "msg", data: e.data });
       };
     },
     cancel() {
       console.log("close!");
       channel.close();
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+      }
     },
   });
+
+  function keepalive(controller: ReadableStreamController<Uint8Array>) {
+    send(controller, { kind: "keepalive" });
+  }
+
+  function send(
+    controller: ReadableStreamController<Uint8Array>,
+    body: unknown,
+  ) {
+    const msg = JSON.stringify(body) + "\n";
+    const chunk = new TextEncoder().encode(msg);
+    controller.enqueue(chunk);
+  }
 
   return new Response(stream, {});
 }
