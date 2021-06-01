@@ -3,6 +3,7 @@ import {
   readLines,
 } from "https://deno.land/std@0.97.0/io/mod.ts";
 import { delay } from "https://deno.land/std@0.97.0/async/delay.ts";
+import { emojify } from "https://deno.land/x/emoji@0.1.2/mod.ts";
 import { Message } from "./types.ts";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -45,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const name = document.createElement("b");
     name.innerText = `[${user}] `;
     const contents = document.createElement("span");
-    contents.innerText = body;
+    contents.innerText = emojify(body);
     li.appendChild(name);
     li.appendChild(contents);
     MESSAGES.appendChild(li);
