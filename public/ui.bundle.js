@@ -877,19 +877,23 @@ document.addEventListener("DOMContentLoaded", ()=>{
         li.appendChild(contents);
         MESSAGES.appendChild(li);
     }
+    let submitting = false;
     FORM.onsubmit = (e)=>{
         e.preventDefault();
         e.stopPropagation();
+        if (submitting) return;
         const body = JSON.stringify({
             body: MESSAGE.value
         });
         FORM.disabled = true;
+        submitting = true;
         fetch("/send", {
             body,
             method: "POST"
         }).then((r)=>r.text()
         ).then((txt)=>{
-            FORM.disabled = false;
+            MESSAGE.disabled = false;
+            submitting = false;
             FORM.reset();
             console.log(txt);
         });
