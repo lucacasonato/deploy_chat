@@ -24,7 +24,7 @@ serve({
     if (typeof name !== "string") {
       return new Response("name is not valid");
     }
-    const resp = Response.redirect("/");
+    const resp = Response.redirect(new URL("/", req.url).href);
     setCookie(resp, { name: "user", value: name });
     return resp;
   },
