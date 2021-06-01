@@ -881,14 +881,15 @@ document.addEventListener("DOMContentLoaded", ()=>{
     FORM.onsubmit = (e)=>{
         e.preventDefault();
         e.stopPropagation();
-        if (submitting) return;
-        const body = JSON.stringify({
-            body: MESSAGE.value
+        const body = MESSAGE.value;
+        if (submitting || body === "") return;
+        const message2 = JSON.stringify({
+            body
         });
         FORM.disabled = true;
         submitting = true;
         fetch("/send", {
-            body,
+            body: message2,
             method: "POST"
         }).then((r)=>r.text()
         ).then((txt)=>{

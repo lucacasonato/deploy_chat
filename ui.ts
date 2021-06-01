@@ -57,14 +57,16 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (submitting) return;
+    const body = MESSAGE.value;
 
-    const body = JSON.stringify({ body: MESSAGE.value });
+    if (submitting || body === "") return;
+
+    const message = JSON.stringify({ body });
 
     FORM.disabled = true;
     submitting = true;
 
-    fetch("/send", { body, method: "POST" })
+    fetch("/send", { body: message, method: "POST" })
       .then((r) => r.text())
       .then((txt) => {
         MESSAGE.disabled = false;
