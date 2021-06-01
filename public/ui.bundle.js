@@ -851,10 +851,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
                 switch(kind){
                     case "msg":
                         {
-                            const { body  } = data;
-                            const li = document.createElement("li");
-                            li.innerText = body;
-                            MESSAGES.appendChild(li);
+                            handleMessage(data);
                             break;
                         }
                     case "keepalive":
@@ -868,6 +865,17 @@ document.addEventListener("DOMContentLoaded", ()=>{
         } finally{
             STATUS.innerText = "🔴 Disconnected";
         }
+    }
+    function handleMessage(message2) {
+        const { user , body  } = message2;
+        const li = document.createElement("li");
+        const name = document.createElement("bold");
+        name.innerText = `[${user}] `;
+        const contents = document.createElement("span");
+        contents.innerText = body;
+        li.appendChild(name);
+        li.appendChild(contents);
+        MESSAGES.appendChild(li);
     }
     FORM.onsubmit = (e)=>{
         e.preventDefault();
