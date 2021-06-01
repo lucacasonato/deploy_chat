@@ -61,7 +61,7 @@ function listen(_req: Request): Response {
       keepalive(controller);
       intervalId = setInterval(() => {
         keepalive(controller);
-      });
+      }, 1000);
       channel.onmessage = (e) => {
         send(controller, { kind: "msg", data: e.data });
       };
