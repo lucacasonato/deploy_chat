@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleMessage(message: Message) {
     const { user, body } = message;
     const li = document.createElement("li");
-    const name = document.createElement("bold");
+    const name = document.createElement("b");
     name.innerText = `[${user}] `;
     const contents = document.createElement("span");
     contents.innerText = body;

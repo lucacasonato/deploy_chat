@@ -869,7 +869,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
     function handleMessage(message2) {
         const { user , body  } = message2;
         const li = document.createElement("li");
-        const name = document.createElement("bold");
+        const name = document.createElement("b");
         name.innerText = `[${user}] `;
         const contents = document.createElement("span");
         contents.innerText = body;
