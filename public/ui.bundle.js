@@ -883,11 +883,16 @@ document.addEventListener("DOMContentLoaded", ()=>{
         const body = JSON.stringify({
             body: MESSAGE.value
         });
+        MESSAGE.disabled = true;
         fetch("/send", {
             body,
             method: "POST"
         }).then((r)=>r.text()
-        ).then(console.log);
+        ).then((txt)=>{
+            MESSAGE.disabled = false;
+            MESSAGE.value = "";
+            console.log(txt);
+        });
         return false;
     };
     async function main() {
