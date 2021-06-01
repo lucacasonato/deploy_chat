@@ -57,13 +57,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const body = JSON.stringify({ body: MESSAGE.value });
 
-    MESSAGE.disabled = true;
+    FORM.disabled = true;
 
     fetch("/send", { body, method: "POST" })
       .then((r) => r.text())
       .then((txt) => {
-        MESSAGE.disabled = false;
-        MESSAGE.value = "";
+        FORM.disabled = false;
+        FORM.reset();
         console.log(txt);
       });
 
