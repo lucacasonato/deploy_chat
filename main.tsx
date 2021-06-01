@@ -91,7 +91,20 @@ function getUser(req: Request): string | undefined {
   return user;
 }
 
+const lastMessageTimestampPerIP = new Map<string, Date>();
+
 async function send(req: Request): Promise<Response> {
+  const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim();
+  const lastMessageTimestamp = lastMessageTimestampPerIP.get(ip);
+  const now = new Date();
+  if (
+    lastMessageTimestamp &&
+    (lastMessageTimestamp.getTime() + 1000 > now.getTime())
+  ) {
+    return new Response("max 1 message per second per IP!", { status: 400 });
+  }
+  lastMessageTimestampPerIP.set(ip, now);
+
   if (req.method === "POST") {
     const user = getUser(req);
     if (user === undefined) {
