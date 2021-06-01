@@ -3,6 +3,7 @@ import {
   readLines,
 } from "https://deno.land/std@0.97.0/io/mod.ts";
 import { delay } from "https://deno.land/std@0.97.0/async/delay.ts";
+import { Message } from "./types.ts";
 
 document.addEventListener("DOMContentLoaded", () => {
   const STATUS = document.getElementById("status") as HTMLSpanElement;
@@ -21,10 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const { kind, data } = JSON.parse(line);
         switch (kind) {
           case "msg": {
-            const { body } = data;
-            const li = document.createElement("li");
-            li.innerText = body;
-            MESSAGES.appendChild(li);
+            handleMessage(data);
             break;
           }
           case "keepalive":
@@ -41,15 +39,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function handleMessage(message: Message) {
+    const { user, body } = message;
+    const li = document.createElement("li");
+    const name = document.createElement("b");
+    name.innerText = `[${user}] `;
+    const contents = document.createElement("span");
+    contents.innerText = body;
+    li.appendChild(name);
+    li.appendChild(contents);
+    MESSAGES.appendChild(li);
+  }
+
+  let submitting = false;
+
   FORM.onsubmit = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const body = JSON.stringify({ body: MESSAGE.value });
+    const body = MESSAGE.value;
 
-    fetch("/send", { body, method: "POST" })
+    if (submitting || body === "") return;
+
+    const message = JSON.stringify({ body });
+
+    FORM.disabled = true;
+    submitting = true;
+
+    fetch("/send", { body: message, method: "POST" })
       .then((r) => r.text())
-      .then(console.log);
+      .then((txt) => {
+        MESSAGE.disabled = false;
+        submitting = false;
+        FORM.reset();
+        console.log(txt);
+      });
 
     return false;
   };

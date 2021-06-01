@@ -851,10 +851,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
                 switch(kind){
                     case "msg":
                         {
-                            const { body  } = data;
-                            const li = document.createElement("li");
-                            li.innerText = body;
-                            MESSAGES.appendChild(li);
+                            handleMessage(data);
                             break;
                         }
                     case "keepalive":
@@ -869,17 +866,38 @@ document.addEventListener("DOMContentLoaded", ()=>{
             STATUS.innerText = "🔴 Disconnected";
         }
     }
+    function handleMessage(message2) {
+        const { user , body  } = message2;
+        const li = document.createElement("li");
+        const name = document.createElement("b");
+        name.innerText = `[${user}] `;
+        const contents = document.createElement("span");
+        contents.innerText = body;
+        li.appendChild(name);
+        li.appendChild(contents);
+        MESSAGES.appendChild(li);
+    }
+    let submitting = false;
     FORM.onsubmit = (e)=>{
         e.preventDefault();
         e.stopPropagation();
-        const body = JSON.stringify({
-            body: MESSAGE.value
+        const body = MESSAGE.value;
+        if (submitting || body === "") return;
+        const message2 = JSON.stringify({
+            body
         });
+        FORM.disabled = true;
+        submitting = true;
         fetch("/send", {
-            body,
+            body: message2,
             method: "POST"
         }).then((r)=>r.text()
-        ).then(console.log);
+        ).then((txt)=>{
+            MESSAGE.disabled = false;
+            submitting = false;
+            FORM.reset();
+            console.log(txt);
+        });
         return false;
     };
     async function main() {
