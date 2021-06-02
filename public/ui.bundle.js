@@ -22279,7 +22279,9 @@ document.addEventListener("DOMContentLoaded", () => {
   async function listen() {
     STATUS.innerText = "\u{1F7E1} Connecting...";
     try {
+      console.log("\u{1F7E1} connecting", performance.now());
       const res = await fetch("/listen");
+      console.log("\u{1F7E2} connected", performance.now());
       STATUS.innerText = "\u{1F7E2} Connected";
       const reader1 = readerFromStreamReader(res.body.getReader());
       const lines = readLines(reader1);
@@ -22298,6 +22300,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     } catch (err) {
+      console.log("\u{1F534} error", performance.now());
       console.error(err);
     } finally {
       STATUS.innerText = "\u{1F534} Disconnected";

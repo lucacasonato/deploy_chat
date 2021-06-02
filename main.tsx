@@ -169,5 +169,7 @@ function listen(_req: Request): Response {
     controller.enqueue(chunk);
   }
 
-  return new Response(stream, {});
+  return new Response(stream, {
+    headers: { "content-type": "application/x-ndjson" },
+  });
 }
