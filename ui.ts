@@ -15,7 +15,9 @@ document.addEventListener("DOMContentLoaded", () => {
   async function listen() {
     STATUS.innerText = "🟡 Connecting...";
     try {
+      console.log("🟡 connecting", performance.now());
       const res = await fetch("/listen");
+      console.log("🟢 connected", performance.now());
       STATUS.innerText = "🟢 Connected";
       const reader = readerFromStreamReader(res.body!.getReader());
       const lines = readLines(reader);
@@ -34,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     } catch (err) {
+      console.log("🔴 error", performance.now());
       console.error(err);
     } finally {
       STATUS.innerText = "🔴 Disconnected";
