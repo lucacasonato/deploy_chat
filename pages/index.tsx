@@ -16,7 +16,6 @@ export default function Home() {
   const [user, setUser] = useState(
     (IS_BROWSER && localStorage?.getItem("username")) || "",
   );
-  // ログインしたか状態を保持する
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
