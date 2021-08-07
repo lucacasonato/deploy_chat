@@ -5,12 +5,14 @@
 import * as $0 from "./pages/api/listen.ts";
 import * as $1 from "./pages/api/send.ts";
 import * as $2 from "./pages/index.tsx";
+import * as $3 from "./pages/_render.ts";
 
 const routes = {
   pages: {
     "./pages/api/listen.ts": $0,
     "./pages/api/send.ts": $1,
     "./pages/index.tsx": $2,
+    "./pages/_render.ts": $3,
   },
   baseUrl: import.meta.url,
 };
