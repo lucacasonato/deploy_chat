@@ -10,13 +10,12 @@ import {
   useState,
 } from "../deps.ts";
 import { Message } from "../types.ts";
-import { Logo } from "./logo.tsx";
+import { Avatar, Logo } from "./icons.tsx";
 
 export default function Home() {
   const [user, setUser] = useState(
     (IS_BROWSER && localStorage?.getItem("username")) || "",
   );
-
   // ログインしたか状態を保持する
   const [loggedIn, setLoggedIn] = useState(false);
 
@@ -100,6 +99,10 @@ const DISCONNECTED = "🔴 Disconnected";
 const CONNECTING = "🟡 Connecting...";
 const CONNECTED = "🟢 Connected";
 
+function toHHMM(ts: string) {
+  return new Date(ts).toLocaleTimeString("en-US", { hour12: false });
+}
+
 function ChatHistory() {
   const [status, setStatus] = useState(DISCONNECTED);
   const [messages, addMessage] = useReducer<Message[], Message>(
@@ -137,13 +140,28 @@ function ChatHistory() {
 
   return (
     <div
-      class={tw`flex-1 flex-col justify-end overflow-y-scroll`}
+      class={tw`flex-1 flex-col justify-end overflow-y-scroll p-4`}
     >
       <p>Status: {status}</p>
       <ul>
         {messages.map((msg) => (
-          <li>
-            <b>{msg.user}</b>: {msg.body}
+          <li class={tw`flex py-2`}>
+            <div>
+              <Avatar />
+            </div>
+            <div class={tw`flex-1 flex flex-col px-2`}>
+              <div class={tw`text-gray-600 flex justify-between`}>
+                <div class={tw`font-bold`}>
+                  {msg.user}
+                </div>
+                <div>
+                  {toHHMM(msg.ts)}
+                </div>
+              </div>
+              <div>
+                {msg.body}
+              </div>
+            </div>
           </li>
         ))}
       </ul>
