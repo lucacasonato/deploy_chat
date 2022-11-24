@@ -69,6 +69,7 @@ function SendMessageForm() {
 
   const onSubmit = (e: Event) => {
     e.preventDefault();
+    if (message.value.length === 0) return;
     fetch("/api/send", {
       method: "POST",
       body: JSON.stringify({
